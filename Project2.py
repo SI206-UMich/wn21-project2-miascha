@@ -153,19 +153,29 @@ class TestCases(unittest.TestCase):
 
     def test_get_book_summary(self):
         # create a local variable – summaries – a list containing the results from get_book_summary()
+        summaries = []
         # for each URL in TestCases.search_urls (should be a list of tuples)
+        for i in TestCases.search_Urls:
+            summaries.append(get_book_summary(i))
 
         # check that the number of book summaries is correct (10)
+        self.assertEqual(len(summaries), 10)
 
             # check that each item in the list is a tuple
+        for i in summaries:
+            self.assertIsInstance(i, tuple, msg = None)
 
             # check that each tuple has 3 elements
+            self.assertEqual(len(i), 3)
 
             # check that the first two elements in the tuple are string
+            self.assertIsInstance(i[0][:1], str, msg = None)
 
             # check that the third element in the tuple, i.e. pages is an int
+            self.assertIsInstance(i[-1], int, msg = None)
 
             # check that the first book in the search has 337 pages
+            self.assertEqual(len(i)[0][2], 337)
 
 
     def test_summarize_best_books(self):
