@@ -143,12 +143,16 @@ class TestCases(unittest.TestCase):
 
     def test_get_search_links(self):
         # check that TestCases.search_urls is a list
+        self.assertIsInstance(TestCases.search_urls, list)
 
         # check that the length of TestCases.search_urls is correct (10 URLs)
-
+        self.assertEqual(len(TestCases.search_urls), 10)
 
         # check that each URL in the TestCases.search_urls is a string
+        for i in TestCases.search_urls:
+            self.assertIsInstance(item, str)
         # check that each URL contains the correct url for Goodreads.com followed by /book/show/
+            self.assertTrue('https://www.goodreads.com/book/show' in i)
 
 
     def test_get_book_summary(self):
