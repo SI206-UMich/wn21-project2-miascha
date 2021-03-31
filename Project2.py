@@ -7,18 +7,36 @@ import unittest
 
 
 def get_titles_from_search_results(filename):
+    url = "https://www.goodreads.com/"
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+
+    tags = soup.find_all('a', class_ = '')
+    for tag in tags:
+        print(tag.get('href, None'))
+    
     """
     Write a function that creates a BeautifulSoup object on "search_results.htm". Parse
     through the object and return a list of tuples containing book titles (as printed on the Goodreads website) 
     and authors in the format given below. Make sure to strip() any newlines from the book titles and author names.
+    For books that have multiple authors, please just grab the first author to put in the tuple.
 
     [('Book title 1', 'Author 1'), ('Book title 2', 'Author 2')...]
     """
 
-    pass
-
 
 def get_search_links():
+    url_list = []
+    url = "https://www.goodreads.com/search?q=fantasy&qid=NwUsLiA2Nc"
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+
+    for link in soup:
+        while i <= 10:
+            url_list.append(link)
+            i = i + 1
+
+    return url_list
     """
     Write a function that creates a BeautifulSoup object after retrieving content from
     "https://www.goodreads.com/search?q=fantasy&qid=NwUsLiA2Nc". Parse through the object and return a list of
@@ -32,10 +50,17 @@ def get_search_links():
 
     """
 
-    pass
-
 
 def get_book_summary(book_url):
+    r = requests.get(book_url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    anchor = soup.find_all('h1', class_ = 'gr-h1 gr-h1--serif')
+    print(anchor)
+    anchor2 = anchor.find_all('div', class_ = 'authorName__container')
+    print(anchor2)
+    anchor3 = anchor2.find_all('span', class_ = 'numberOfPages')
+    print(anchor3)
+    
     """
     Write a function that creates a BeautifulSoup object that extracts book
     information from a book's webpage, given the URL of the book. Parse through
@@ -154,24 +179,35 @@ class TestCases(unittest.TestCase):
 
         # check that the first tuple is made up of the following 3 strings:'Fiction', "The Midnight Library", 'https://www.goodreads.com/choiceawards/best-fiction-books-2020'
 
-        # check that the last tuple is made up of the following 3 strings: 'Picture Books', 'A Beautiful Day in the Neighborhood: The Poetry of Mister Rogers', 'https://www.goodreads.com/choiceawards/best-picture-books-2020'
+        # check that the last tuple is made up of the following 3 strings: 'Picture Books', 'Antiracist Baby', 'https://www.goodreads.com/choiceawards/best-picture-books-2020'
 
 
     def test_write_csv(self):
         # call get_titles_from_search_results on search_results.htm and save the result to a variable
+        results = get_titles_from_search_results('search_results.htm')
 
         # call write csv on the variable you saved and 'test.csv'
+        write_csv(results, 'test.csv')
 
         # read in the csv that you wrote (create a variable csv_lines - a list containing all the lines in the csv you just wrote to above)
+        csv_lines = []
+        with open('test.csv') as f:
+            csv_file = csv.reader(f)
+            for line in csv_file:
+                csv_lines.append(line)
 
 
         # check that there are 21 lines in the csv
+        self.assertEqual(len(csv_lines), 21)
 
         # check that the header row is correct
+        self.assertEqual(csv_lines[0], ['Book Title', 'Author Name'])
 
         # check that the next row is 'Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'
+        self.assertEqual(csv_lines[1], ['Harry Potter and the Deathly Hallows (Harry Potter, #7', 'J.K. Rowling'])
 
-        # check that the last row is 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'Julian Harrison (Introduction)'
+        # check that the last row is 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'
+        self.assertEqual(csv_lines[-1], ['Harry Potter: The Prequel (Harry Potter, #0.5', 'J.K. Rowling'])
 
 
 
