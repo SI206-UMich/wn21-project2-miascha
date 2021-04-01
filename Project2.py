@@ -169,8 +169,8 @@ def extra_credit(filepath):
     with open(filepath, 'r') as a:
         data = a.read()
     soup = BeautifulSoup(data, 'lxml')
-    regex = r'([A-Z]{1}\w+ [A-Z]{1}.+)+'
-    d = soup.find('div', class_ = 'readable stacked').find('span', id = 'freeTextContainer4791443123668479528').text
+    regex = r'\b([A-Z]{1}\w+ [A-Z]\w+)\b'
+    d = soup.find('div', class_ = 'readable stacked').find('span', id = 'freeText4791443123668479528').text
 
     entity = re.findall(regex, d)
 
